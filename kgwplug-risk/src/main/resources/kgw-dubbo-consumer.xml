@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+    <dubbo:application name="${kgw.dubbo.application.name}"/>
+    <dubbo:registry protocol="zookeeper" address="${kgw.dubbo.registry.address}"/>
+    <dubbo:protocol name="${kgw.dubbo.protocol.name}" port="${kgw.dubbo.protocol.port}"/>
+    <dubbo:reference id="kgwApi" interface="com.kgw.api.KgwApi" retries="0" />
+
+    <dubbo:service interface="com.yryz.kgwplug.gwapi.GWRiskApi"
+                   ref="gwRiskApi" />
+
+    <bean id="gwRiskApi" class="com.yryz.kgwplug.risk.impl.GWRiskApiImpl" >
+    </bean>
+
+    <bean id="kgwAnnotationBeanProcessor" class="com.kgw.annotation.KgwAnnotationBeanProcessor">
+        <property name="kgwApi" ref="kgwApi"></property>
+    </bean>
+    <dubbo:service interface="com.yryz.gwtemplate.demo.DemoServer"
+                   ref="demoServer" />
+
+    <bean id="demoServer" class="com.yryz.gwtemplate.demo.impl.DemoServerImpl" >
+    </bean>
+</beans>
